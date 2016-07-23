@@ -1,0 +1,70 @@
+# Author: Michael Foy
+# Student ID: 06695779
+# Description:
+# Search function to search CustomerDetails.txt file.
+# Checks that search term is not blank.
+# Checks that the search term exists in the file.
+# All matching search results returned.
+# Loop ensures script runs until user chooses to exit
+
+
+#!/bin/bash
+stop=0
+until [ $stop = 1 ]
+    do
+        clear
+        echo -e "\e[44m-------------------------------------------------------------"
+        echo "                  CUSTOMER SEARCH ENGINE                     "
+        echo "                                                             "
+        echo "                       Instructions                          "
+        echo "Follow the prompts to search for a customer in Customer Book."
+        echo "    To cancel and return to main menu, enter blank input     "
+        echo "                                                             "
+        echo -e "-------------------------------------------------------------\e[0m"
+        echo
+
+        #Checks for blank input
+        check=0
+        while [ $check -lt 1 ]
+        do
+            echo "Search:"
+            read term
+            source script.sh; blankcheck $term
+        done
+        echo "Searching..."
+        sleep 1
+
+        #Checks for search term, returns entry if found
+        if grep -i $term CustomerDetails.txt > /dev/null
+        then
+            echo
+            echo
+            echo -e "\e[94;107m===================================================================="
+            echo "                                                                    "
+            echo "Search results are printed in the following order:                  "
+            echo " EMAIL  |  NAME  |  ALIAS  |  ADDRESS  |  PHONE NUMBER              "
+            echo "                                                                    "
+            echo -e "====================================================================\e[0m"
+            echo "Search results for $term:"
+            echo
+            grep -i $term CustomerDetails.txt
+        else
+            echo "$term not found!"
+        fi
+
+        # Option to exit script
+        echo
+        echo "Would you like to search again? y/n"
+        read response
+        case $response in
+        y|Y )
+            echo ""
+        ;;
+        n|N )
+            stop=1
+        ;;
+        * )
+            echo "Unrecognised command"
+        esac
+done
+exit

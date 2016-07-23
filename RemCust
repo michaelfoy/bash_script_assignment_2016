@@ -1,0 +1,106 @@
+# Author: Michael Foy
+# Student ID: 06695779
+# Description:
+# Script to remove a customer from the Customer Book
+# A search is done through CustomerDetails.txt, all
+# matching customers returned.
+# User identifies customer to be removed through file line number.
+# Loop ensures script runs until user chooses to exit
+
+
+#!/bin/bash
+
+stop=0
+until [ $stop = 1 ]
+    do
+    clear
+    echo -e "\e[44m-----------------------------------------------------------"
+    echo "                   REMOVE A CUSTOMER                       " 
+    echo "                                                           "
+    echo "                     Instructions                          "
+    echo "Follow the prompts to remove a customer from Customer Book."
+    echo "  To cancel and return to main menu, enter blank input     "
+    echo "                                                           "
+    echo -e "-----------------------------------------------------------\e[0m"
+
+    CUSTOMERS="CustomerDetails.txt"
+
+    #Checks for blank input and multiple entries
+    halt=0
+    while [ $halt -lt 1 ]
+    do
+        check=0
+        while [ $check -lt 1 ]
+        do
+            echo "Search customer to be removed:"
+            read search
+            source script.sh; blankcheck $search
+        done
+
+        # Gives option to remove specific customer,
+        # User uses index number to identify customer
+        if grep -i $search CustomerDetails.txt > /dev/null
+        then
+            sleep 1
+            echo
+            echo "======================================================="
+            echo " Search results for $search"
+            echo
+            grep -i -n $search CustomerDetails.txt
+            echo "======================================================="
+            halt=1
+        else
+            sleep 1
+            echo
+            echo
+            echo "$search not found!"
+            sleep 1
+            echo
+        fi
+    done
+
+    # Loop checks for blank input, gives option to exit
+    check=0
+    while [ $check -lt 1 ]
+    do
+        echo "Please enter the index number of customer to be removed"
+        echo "The index numbers are listed on the left"
+        read index
+        source script.sh; blankcheck $index
+    done
+
+    # Confirm decision
+    echo "Delete customer number $index ? y/n"
+    read answer
+
+    # Stream editor deletes specified line in CustomerDetails.txt 
+    case $answer in
+         y|Y )
+            echo "Removing Customer"
+            sed -i "${index}d" $CUSTOMERS
+            sleep 1
+            echo "Customer Removed"
+            sleep 1            
+        ;;
+        n|N )
+            echo ""
+        ;;
+        * )
+          echo "Unrecognised Command"
+          echo ""
+    esac
+
+    # Option to exit
+    echo "Remove another customer? y/n"
+    read response
+    case $response in
+    n|N )
+        echo "Returning to Main Menu"
+        sleep 2
+        stop=1
+    ;;
+    * )
+      echo ""
+    esac
+done
+exit

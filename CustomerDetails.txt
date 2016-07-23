@@ -1,0 +1,4 @@
+paul@beatle.com   |   Paul McCartney   |    (Mushroomhead)   |   L.A.   |   12345
+ringo@beatle.com   |   Ringo Starr   |    (9 carat)   |   Liverpool   |   12345
+george@beatle.com   |   George Harrison   |    (Ravi)   |   Goa   |   12345
+john@beatle.com   |   Jonh Lennon   |    (Coco for Yoko)   |   Strawberry Fields   |   123456

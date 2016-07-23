@@ -1,0 +1,383 @@
+# Author: Michael Foy
+# Student ID: 06695779
+# Description:
+# Main menu for Customer Book providing access
+# to it's files and data. The programme always 
+# returns to the main menu (keeps the book open)
+# until the person chooses option 5 to leave 
+# the programme (close the book) and then confirms
+# the choice. The while loop is in place to make
+# sure the menu screen always reloads until the
+# user chooses to leave
+
+
+#!/bin/bash
+
+stop=0
+while [ $stop -lt 1 ]
+do
+
+    clear
+    
+    echo "================================================================="
+    echo                                                                  
+    echo "-----             Welcome to the Customer Book             -----"
+    echo 
+    echo 
+    echo "  Please choose one of the following:"
+    echo                      
+    echo                                          
+    echo "                  1. Add a new Customer"
+    echo  
+    echo "                  2. Remove an existing Customer"
+    echo 
+    echo "                  3. Search for a Customer"
+    echo 
+    echo "                  4. E-mail a Customer"
+    echo 
+    echo "                  5. Exit the Main Menu"
+    echo
+    echo
+    echo 
+    echo 
+    echo "================================================================="
+
+
+# The user must choose an option, if something other than
+# the 5 options is enetered, the user is returned to the prompt
+
+    echo "Main Menu"
+    echo "Please type a number followed by ENTER:"
+    read number
+
+    case "$number" in
+    1 )
+        echo " You have chosen to add a new customer. Do you wish to continue? y/n"
+        read response
+        case "$response" in
+        y|Y )
+            ./AddCust
+        ;;
+        n|N )
+            echo "Returning to menu..."
+            sleep1
+        ;;
+        * )
+            echo "Unrecognised command, returning to Main Menu..."
+            sleep 1
+            echo
+            
+        esac
+    ;;    
+
+    2 )
+        echo " You have chosen to remove a customer. Do you wish to continue? y/n"
+        read response
+        case "$response" in
+        y|Y )
+            ./RemCust
+        ;;
+        n|N )
+            echo "Returning to menu..."
+            sleep1
+        ;;
+        * )
+            echo "Unrecognised command, returning to Main Menu..."
+            sleep 1
+            echo
+            
+        esac
+    ;;         
+     
+    3 )
+        echo " You have chosen to search for a customer. Do you wish to continue? y/n"
+        read response
+        case "$response" in
+        y|Y )
+            ./FindCust
+        ;;
+        n|N )
+            echo "Returning to menu..."
+            sleep1
+        ;;
+        * )
+            echo "Unrecognised command, returning to Main Menu..."
+            sleep 1
+            echo
+            
+        esac
+    ;;      
+
+    4 )
+        echo " You have chosen to email a customer. Do you wish to continue? y/n"
+        read response
+        case "$response" in
+        y|Y )
+            # While loop keeps email options open until they choose to exit
+            halt=0
+            until [ $halt = 1 ]
+                do
+                    clear
+                    echo -e "\e[44m------------------------------------------------------------- "
+                    echo "                      CUSTOMER EMAIL                          "
+                    echo "                                                              "
+                    echo "                       Instructions                           "
+                    echo "  Follow the prompts to email an individual or all customers. "
+                    echo "                                                              "
+                    echo "      =  To exit and return to main menu,                     " 
+                    echo "             enter blank input at email option.               "
+                    echo "                                                              "
+                    echo "      =  To exit once an option is chosen, follow the prompts "
+                    echo "             until returned to the option page                "
+                    echo "                                                              "
+                    echo -e "--------------------------------------------------------------\e[0m"
+                    echo
+                    echo
+                    echo "Please choose email option:"
+                    echo
+                    echo " 1. Email individual customer"
+                    echo " 2. Email all customers"
+                    echo "------------------------------"
+                    echo "Type a number followed by ENTER:"
+                    read option
+
+                    # Individual Email
+                    case "$option" in
+                    1 ) 
+                        # Reads input, checks it is not blank
+                        error=0
+                        while [[ $error -ne 1 ]]
+                        do
+                            echo "Search Customer Book for customer:"
+                            read term
+                            echo "Searching..."
+                            sleep 1
+                            if [[ -z "$term" ]]
+                            then
+                                echo "No input found"
+                                echo
+                                sleep 1
+                            else
+                                error=1
+                            fi
+                        done
+
+
+                        # Checks for search term, returns entry if found
+                        if grep -i $term CustomerDetails.txt > /dev/null
+                        then
+                            echo
+                            echo
+                            echo -e "\e[94;107m* ===================================================================="
+                            echo "                                                                    "
+                            echo "Search results are printed in the following order:                  "
+                            echo " EMAIL  |  NAME  |  ALIAS  |  ADDRESS  |  PHONE NUMBER              "
+                            echo "                                                                    "
+                            echo -e "====================================================================\e[0m"
+                            echo "Search results for $term:"
+                            echo
+                            grep -i $term CustomerDetails.txt
+
+                            # Choose user to email
+                            echo
+                            echo "Please enter the email address of customer to email"
+                            echo "(Enter blank input to return to email options or exit)"
+                            read email
+
+                            # Write email
+                            clear
+                            echo " EMAIL INDIVIDUAL CUSTOMER"
+                            echo
+                            echo
+                            echo " Please enter email subject:"
+                            echo "(Enter blank input to return to email options or exit)"
+                            echo 
+                            read subject
+                            echo "-------------------------------------------------------------"
+                            echo " Please enter email content:"
+                            echo "(Enter blank input to return to email options or exit)"
+                            echo 
+                            read text
+                            sleep 1
+
+                            # Confirm email content with user
+                            # Loop ensures the email is not lost if erroneous command is used
+                            emailcheck=0
+                            while [ $emailcheck -lt 1 ]
+                            do
+                                echo
+                                echo
+                                echo "Send the following email to $email? y/n"
+                                echo "(Enter 'n' to return to email options or exit)"
+                                echo""
+                                echo "Subject: $subject"
+                                echo "'"$text"'"
+                                read response
+                                case "$response" in
+                                    y|Y )
+                                        echo $text | mail -s $subject $email
+                                        echo "Email sent to $email"
+                                        emailcheck=1
+                                        sleep 1        
+                                    ;;
+                                    n|N )
+                                        echo "Email cancelled"
+                                        echo "Returning to email options..."
+                                        emailcheck=1
+                                        sleep 1
+                                    ;;
+                                    * )
+                                        echo "Unrecognised command"
+                                        echo
+                                        echo
+                                        sleep 1
+                                    ;;
+                                esac
+                            done
+                            sleep 1
+                            #no confirm returns to email option
+                            #send
+                            #return to email option
+                        else
+                            echo
+                            echo "'""$term""'"" not found!"
+                            echo "Returning to email options..."
+                            sleep 2
+                        fi
+                    ;;
+                    2 )
+                        # Loops until user chooses to return to email options
+                        cease=0
+                        while [ $cease -lt 1 ]
+                        do
+                            clear
+                            echo " EMAIL ALL CUSTOMERS"
+                            echo
+                            echo
+                            echo " Please enter email subject:"
+                            echo 
+                            read subject
+                            echo "-------------------------------------------------------------"
+                            echo " Please enter email content:"
+                            echo 
+                            read text
+                            echo
+                            sleep 1
+
+                            # Confirm email content with user, then send or give option of changing email
+                            # Loop ensures the email is not lost if an erroneous command is used
+                            emailcheck=0
+                            while [ $emailcheck -lt 1 ]
+                            do
+                                echo "Send the following to all customers? y/n"
+                                echo "Subject: $subject"
+                                echo "'"$text"'"
+                                read response
+                                case "$response" in
+                                    y|Y )
+
+                                        email=`grep -i "|" CustomerDetails.txt | awk '{print $1}'`
+                                        echo $text | mail -s $subject $email
+                                        echo "Email sent to $email"
+                                        emailcheck=1
+                                    ;;
+                                    n|N )
+                                        echo "Email cancelled"
+                                        echo "Returning to email options..."
+                                        emailcheck=1
+                                    ;;
+                                    * )
+                                        echo "Unrecognised command"
+                                        echo
+                                        echo
+                                        sleep 1
+                                    ;;
+                                esac
+                            done
+                            sleep 1
+
+                            echo "Send another email to all customers? y/n"
+                            read response
+                            case "$response" in
+                                y|Y )
+                                    sleep 1
+                                ;;
+                                n|N )
+                                    echo "Returning to email options..."
+                                    sleep 2
+                                    cease=1
+                                ;;
+                                * )
+                                    echo "Unrecognised command"
+                                    echo "Returning to email options..."
+                                    sleep 2
+                                    cease=1
+                                ;;
+                            esac 
+                        done
+                    ;;
+                    "" )
+                        echo -e "\e[41m-----------------------------------"
+                        echo "        No input entered           "
+                        echo "    Return to main menu? y/n       "
+                        echo -e "-----------------------------------\e[0m"
+                        read response
+                        case $response in
+                            y|Y )
+                                echo "Returning to menu..."
+                                halt=1
+                                sleep 1
+                            ;;
+                            * )
+                                echo
+                        esac
+                    ;;
+                    * )
+                        echo "Unrecognised command"
+                        echo "Returning to menu..."
+                        halt=1
+                        sleep 1
+                        sleep 1
+                    esac
+            done
+
+        ;;
+        n|N )
+            echo "Returning to menu..."
+            sleep 1
+        ;;
+        * )
+            echo "Unrecognised command, returning to Main Menu..."
+            sleep 1
+            echo
+            
+        esac
+    ;; 
+
+    5 )
+        echo " You have chosen to exit Customer Book. Do you wish to continue? y/n"
+        read response
+
+        case "$response" in
+        y|Y )
+            stop=1
+            echo "Exiting Customer Book..."
+            sleep 2
+            exit
+        ;;
+        n|N )
+            echo "Returning to Main Menu"
+            sleep 1
+        ;;
+        * )
+            echo "Unrecognised command, returning to Main Menu..."
+            sleep 1
+        ;;
+        esac
+    ;;
+    
+    * )
+        echo "Unrecognised command"
+        sleep 1
+    esac
+done

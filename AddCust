@@ -1,0 +1,112 @@
+# Author: Michael Foy
+# Student ID: 06695779
+# Description:
+# Script to add a new Customer to the Customer Book.
+# Each input is looped until adequate input is entered
+# or user returns to main menu.
+# Checks the input for phone number is a number.
+# Checks the input for email includes three sets of characters
+# separated by '@' and '.'
+
+#!/bin/bash
+clear
+echo -e "\e[44m-----------------------------------------------------------"
+echo "                   ADD NEW CUSTOMER                        "
+echo "                                                           "
+echo "                     Instructions                          "
+echo "  Follow the prompts to add a customer to Customer Book.   "
+echo "   To cancel and return to main menu, enter blank input.   "
+echo "                                                           "
+echo -e "-----------------------------------------------------------\e[0m"
+echo
+sleep 1
+
+# Read Customer Name
+check=0
+while [ $check -lt 1 ]
+do
+    echo "Customer Name:"
+    read name
+    source script.sh; blankcheck $name
+done
+
+# Read Customer Alias
+check=0
+while [ $check -lt 1 ]
+do
+    echo "Customer Alias:"
+    read alias
+    source script.sh; blankcheck $alias
+done
+
+# Read Customer Address
+check=0
+while [ $check -lt 1 ]
+do
+    echo "Customer Address:"
+    read address
+    source script.sh; blankcheck $address
+done
+
+# Read Customer Phone number
+phonecheck=0
+while [ $phonecheck -lt 1 ]
+do
+    echo "Customer Phone:"
+    read phone
+
+    #Checks that input consists of numbers
+    re='^[0-9]+$'
+    if [[ $phone =~ $re ]]
+    then
+        # Confirms user input
+        echo "You have entered $phone"
+        echo "Is this correct? y/n"
+        read input
+        case $input in
+        y|Y )
+             phonecheck=1
+             
+        ;;
+        n|N )
+             echo "Please re-enter number"
+        ;;
+        * )
+           echo "Unrecognised command"
+        esac
+    else
+        echo "Please enter a number"
+    fi
+done
+
+# Reads Customer Email
+# If all info correct, creates customer account
+emailcheck=0
+while [ $emailcheck -lt 1 ]
+do
+    check=0
+    while [ $check -lt 1 ]
+    do
+        echo "Customer Email:"
+        read email
+        source script.sh; blankcheck $email
+    done
+
+    #Checks that input separated by '@' and '.'
+    if [[ $email == *@*.* ]]
+    then
+        # Creates customer account from input
+        echo "$email   |   $name   |    ($alias)   |   $address   |   $phone" >> CustomerDetails.txt
+        emailcheck=1
+    else
+        echo "Please enter a valid email address"
+    fi
+done
+
+sleep 1
+echo ""
+echo "$name added to Customer Book"
+sleep 1
+echo "Returning to Main Menu..."
+sleep 2
+exit
