@@ -30,4 +30,4 @@ If permission is denied, run the following commands to grant execution permissio
 
 Once the program is running, simply follow the command line instructions.
 
-*Nb. This project was developed for linux systems using Ubuntu, some functionality may not work as expected in other systems, notably the `sed` command in the **Remove Customer** function does not work on a Mac terminal*
+*Nb. This project was developed for linux systems using Ubuntu, some functionality may not work as expected in other systems, notably the `sed` command in the Remove Customer function does not work on a Mac terminal*
